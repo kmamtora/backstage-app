@@ -1,0 +1,27 @@
+name: Backstage Triggered Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      repoName:
+        description: "Repository Name"
+        required: true
+        type: string
+      branchName:
+        description: "Branch Name"
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branchName }}
+
+      - name: Print Variables
+        run: |
+          echo "Repo Name: ${{ github.event.inputs.repoName }}"
+          echo "Branch Name: ${{ github.event.inputs.branchName }}"
