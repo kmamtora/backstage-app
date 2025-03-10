@@ -15,6 +15,9 @@ on:
         description: "Node Type"
         required: true
         type: string
+      uploadedFile:
+        description: "Path to the uploaded file"
+        required: true
 
 jobs:
   build:
