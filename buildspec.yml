@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  parameter-store:
+    DOCKERHUB_USERNAME: "/codebuild/dockerhub/username"
+    DOCKERHUB_TOKEN: "/codebuild/dockerhub/token"
+
+phases:
+  pre_build:
+    commands:
+      - echo "Starting AWS CodeBuild Process..."
+      - echo "Logging into Docker Hub..."
+      - echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+  build:
+    commands:
+      - echo "Building Docker Image..."
+      - docker build -t kmamtora/test-dev:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - docker tag kmamtora/test-dev:$CODEBUILD_RESOLVED_SOURCE_VERSION kmamtora/test-dev:latest
+
+  post_build:
+    commands:
+      - echo "Pushing Docker Image to Docker Hub..."
+      - docker push kmamtora/test-dev:$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - docker push kmamtora/test-dev:latest
+      - echo "Build completed successfully."
+
+artifacts:
+  files:
+    - "**/*"
